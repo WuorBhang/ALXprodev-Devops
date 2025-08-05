@@ -1,2 +1,11 @@
 #!/bin/bash
-jq -r '. as $p | [$p.name, $p.types[0].type.name, ($p.weight/10), ($p.height/10)] | @tsv' data.json | awk -F'\t' '{printf "%s is of type %s, weighs %skg, and is %sm tall.\n", $1, toupper(substr($2,1,1)) substr($2,2), $3, $4}' | sed 's/\.0kg/kg/g; s/\.0m/m/g'
+
+name=$(jq -r '.name' data.json)
+type=$(jq -r '.types[0].type.name' data.json)
+weight=$(jq -r '.weight' data.json)
+height=$(jq -r '.height' data.json)
+
+h=$(awk "BEGIN {printf \"%.1f\", $height / 10}")
+w=$(awk "BEGIN {printf \"%.1f\", $weight / 10}")
+
+echo "$(echo $name | awk '{print toupper(substr($0,1,1)) tolower(substr($0,2))}') is of type $(echo $type | awk '{print toupper(substr($0,1,1)) tolower(substr($0,2))}'), weighs ${w}kg, and is ${h}m tall."
