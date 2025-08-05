@@ -1,2 +1,4 @@
 #!/bin/bash
-mkdir -p pokemon_data; for p in bulbasaur ivysaur venusaur charmander charmeleon; do for i in 1 2 3; do curl -s https://pokeapi.co/api/v2/pokemon/$p -o pokemon_data/$p.json && break; [ $i -eq 3 ] && echo "$p: failed" >> errors.txt; sleep 1; done; done
+mkdir -p pokemon_data
+for p in bulbasaur ivysaur venusaur charmander charmeleon; do curl -s https://pokeapi.co/api/v2/pokemon/$p -o pokemon_data/$p.json & done
+wait
