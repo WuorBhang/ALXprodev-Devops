@@ -2,17 +2,17 @@
 
 mkdir -p pokemon_data
 
-pokemons=(bulbasaur ivysaur venusaur charmander charmeleon)
+pokemons=("bulbasaur" "ivysaur" "venusaur" "charmander" "charmeleon")
 
-for name in "${pokemons[@]}"
+for p in "${pokemons[@]}"
 do
   (
-    echo "Fetching data for $name..."
-    curl -s https://pokeapi.co/api/v2/pokemon/$name -o pokemon_data/${name}.json
-    if [ $? -eq 0 ]; then
-      echo "Saved data to pokemon_data/${name}.json ✅"
+    echo "Fetching data for $p..."
+    response=$(curl -s -w "%{http_code}" -o "pokemon_data/${p}.json" "https://pokeapi.co/api/v2/pokemon/$p")
+    if [ "$response" -eq 200 ]; then
+      echo "Saved data to pokemon_data/${p}.json ✅"
     else
-      echo "Error fetching $name" >> errors.txt
+      echo "Error fetching $p" >> errors.txt
     fi
   ) &
 done
