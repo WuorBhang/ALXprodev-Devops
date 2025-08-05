@@ -17,4 +17,8 @@ do
   ) &
 done
 
+jobs
+
 wait
+
+kill 0
