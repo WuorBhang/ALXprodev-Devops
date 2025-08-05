@@ -2,16 +2,33 @@
 
 echo "Name,Height (m),Weight (kg)" > pokemon_report.csv
 
+total_h=0
+total_w=0
+count=0
+
 for file in pokemon_data/*.json
 do
-  name=$(jq -r '.name' $file)
-  height=$(jq -r '.height' $file)
-  weight=$(jq -r '.weight' $file)
+  name=$(jq -r '.name' "$file")
+  height=$(jq -r '.height' "$file")
+  weight=$(jq -r '.weight' "$file")
 
-  h=$(awk "BEGIN {printf \"%.1f\", $height / 10}")
-  w=$(awk "BEGIN {printf \"%.1f\", $weight / 10}")
+  h=$(awk "BEGIN { printf \"%.1f\", $height / 10 }")
+  w=$(awk "BEGIN { printf \"%.1f\", $weight / 10 }")
 
-  echo "$(echo $name | awk '{print toupper(substr($0,1,1)) tolower(substr($0,2))}'),$h,$w" >> pokemon_report.csv
+  echo "$(echo $name | sed 's/.*/\u&/'),$h,$w" >> pokemon_report.csv
+
+  total_h=$(awk "BEGIN { print $total_h + $h }")
+  total_w=$(awk "BEGIN { print $total_w + $w }")
+  count=$((count + 1))
 done
 
-awk -F, 'NR>1 {h+=$2; w+=$3; c++} END {print "\nAverage Height: " h/c " m\nAverage Weight: " w/c " kg"}' pokemon_report.csv
+avg_h=$(awk "BEGIN { printf \"%.2f\", $total_h / $count }")
+avg_w=$(awk "BEGIN { printf \"%.2f\", $total_w / $count }")
+
+echo ""
+echo "CSV Report generated at: pokemon_report.csv"
+echo ""
+cat pokemon_report.csv
+echo ""
+echo "Average Height: ${avg_h} m"
+echo "Average Weight: ${avg_w} kg"
