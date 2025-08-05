@@ -1,2 +1,6 @@
 #!/bin/bash
-jq -r '"\(.name|ascii_upcase) is of type \(.types[0].type.name|ascii_upcase), weighs \(.weight/10)kg, and is \(.height/10)m tall."' data.json
+name=$(jq -r '.name' data.json)
+height=$(jq -r '.height/10' data.json)
+weight=$(jq -r '.weight/10' data.json)
+type=$(jq -r '.types[0].type.name' data.json)
+echo "${name^} is of type ${type^}, weighs ${weight}kg, and is ${height}m tall."
