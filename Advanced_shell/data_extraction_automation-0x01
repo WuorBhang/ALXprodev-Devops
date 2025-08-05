@@ -5,7 +5,7 @@ type=$(jq -r '.types[0].type.name' data.json)
 weight=$(jq -r '.weight' data.json)
 height=$(jq -r '.height' data.json)
 
-h=$(awk "BEGIN {printf \"%.1f\", $height / 10}")
-w=$(awk "BEGIN {printf \"%.1f\", $weight / 10}")
+h=$(awk "BEGIN { printf \"%.1f\", $height / 10 }")
+w=$(awk "BEGIN { printf \"%.0f\", $weight / 10 }")
 
-echo "$(echo $name | awk '{print toupper(substr($0,1,1)) tolower(substr($0,2))}') is of type $(echo $type | awk '{print toupper(substr($0,1,1)) tolower(substr($0,2))}'), weighs ${w}kg, and is ${h}m tall."
+echo "$(echo $name | sed 's/.*/\u&/') is of type $(echo $type | sed 's/.*/\u&/'), weighs ${w}kg, and is ${h}m tall."
