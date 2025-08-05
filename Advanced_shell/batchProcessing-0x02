@@ -7,11 +7,24 @@ pokemons=(bulbasaur ivysaur venusaur charmander charmeleon)
 for name in "${pokemons[@]}"
 do
   echo "Fetching data for $name..."
-  curl -s https://pokeapi.co/api/v2/pokemon/$name -o pokemon_data/${name}.json
-  if [ $? -eq 0 ]; then
-    echo "Saved data to pokemon_data/${name}.json ✅"
-  else
-    echo "Error fetching $name" >> errors.txt
+  retries=0
+  success=0
+
+  while [ $retries -lt 3 ]
+  do
+    curl -s https://pokeapi.co/api/v2/pokemon/$name -o pokemon_data/${name}.json
+    if [ $? -eq 0 ]; then
+      echo "Saved data to pokemon_data/${name}.json ✅"
+      success=1
+      break
+    fi
+    retries=$((retries + 1))
+    sleep 1
+  done
+
+  if [ $success -eq 0 ]; then
+    echo "Failed to fetch $name after 3 attempts" >> errors.txt
   fi
+
   sleep 1
 done
