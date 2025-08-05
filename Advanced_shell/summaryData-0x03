@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "Name,Height (m),Weight (kg)" > pokemon_report.csv
+for f in pokemon_data/*.json; do n=$(jq -r .name $f); h=$(jq -r .height $f); w=$(jq -r .weight $f); echo "$n,$(awk "BEGIN{print $h/10}"),$(awk "BEGIN{print $w/10}")" >> pokemon_report.csv; done
+awk -F, 'NR>1{h+=$2;w+=$3;n++}END{print "Average Height: " h/n " m\nAverage Weight: " w/n " kg"}' pokemon_report.csv
